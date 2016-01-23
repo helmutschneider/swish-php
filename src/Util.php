@@ -21,8 +21,8 @@ class Util
     public static function getPaymentRequestIdFromResponse(ResponseInterface $response)
     {
         $header = $response->getHeaderLine('Location');
-        preg_match('/\/paymentrequests\/(\w+)$', $header, $matches);
-        return $matches[0];
+        preg_match('/\/paymentrequests\/(\w+)$/', $header, $matches);
+        return $matches[1];
     }
 
 }
