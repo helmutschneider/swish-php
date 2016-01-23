@@ -49,6 +49,16 @@ class ClientTest extends Test
         codecept_debug($res->getHeaders());
 
         $this->assertEquals(201, $res->getStatusCode());
+
+        $id = Util::getPaymentRequestIdFromResponse($res);
+
+        $res = $this->client->getPaymentRequest($id);
+
+        $body = json_decode((string) $res->getBody(), true);
+
+        codecept_debug($body);
+
+        $this->assertEquals($id, $body['id']);
     }
 
 }

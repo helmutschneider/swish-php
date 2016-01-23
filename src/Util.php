@@ -25,4 +25,15 @@ class Util
         return $matches[1];
     }
 
+    /**
+     * @param ResponseInterface $response
+     * @return string
+     */
+    public static function getRefundIdFromResponse(ResponseInterface $response)
+    {
+        $header = $response->getHeaderLine('Location');
+        preg_match('/\/refunds\/(\w+)$/', $header, $matches);
+        return $matches[1];
+    }
+
 }
