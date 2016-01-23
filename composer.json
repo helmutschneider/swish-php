@@ -1,0 +1,29 @@
+{
+    "name": "helmutschneider/swish-php",
+    "description": "PHP-wrapper for the Swish api",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Johan Björk",
+            "email": "johanimon@gmail.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {
+        "php": ">=5.5.9",
+        "guzzlehttp/guzzle": "^6.1"
+    },
+    "require-dev": {
+        "codeception/codeception": "^2.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "HelmutSchneider\\Swish\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "HelmutSchneider\\Swish\\Tests\\": "tests/unit/"
+        }
+    }
+}
