@@ -35,4 +35,12 @@ class UtilTest extends Test
         $this->assertEquals($id, Util::getRefundIdFromResponse($response));
     }
 
+    public function testDecodeResponse()
+    {
+        $response = new Response(200, [], '{ "hello":"world" }');
+        $decoded = Util::decodeResponse($response);
+
+        $this->assertEquals(['hello' => 'world'], $decoded);
+    }
+
 }

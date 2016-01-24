@@ -36,4 +36,15 @@ class Util
         return $matches[1];
     }
 
+    /**
+     * @param ResponseInterface $response
+     * @param bool $assoc decode into an associative array
+     * @return array|\stdClass
+     */
+    public static function decodeResponse(ResponseInterface $response, $assoc = true)
+    {
+        $body = (string) $response->getBody();
+        return json_decode($body, $assoc);
+    }
+
 }
