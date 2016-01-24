@@ -34,4 +34,11 @@ $options = [
 $client = new \HelmutSchneider\Swish\Client($guzzle, $baseUrl, $options);
 ```
 
-## Testing
+## Notes
+The bundled php & curl on OSX do not work well with the Swish api. This is probably because they were compiled with
+SecureTransport and not OpenSSL.
+
+## Run the tests
+```shell
+vendor/bin/codecept run
+```
