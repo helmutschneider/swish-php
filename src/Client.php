@@ -102,7 +102,7 @@ class Client
      * @param string $rootCert path to the swish CA root cert. forwarded to guzzle's "verify" option.
      * @param string $clientCert path to your client side cert. forwarded to guzzle's "cert" option
      * @param string|string[] $clientCertKey path to the private key corresponding to the client cert.
-     *                        if the private key is password protected, pass an ['PATH', 'PASSWORD']
+     *                        if the private key is password protected, pass an array ['PATH', 'PASSWORD']
      * @param string $baseUrl url to the swish api
      * @return Client
      */
