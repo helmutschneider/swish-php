@@ -19,6 +19,9 @@ certificated so a CA-bundle to verify its origin is needed. You will also need a
 corresponding private key so the Swish server can identify you.
 
 ```php
+use HelmutSchneider\Swish\Client;
+use HelmutSchneider\Swish\Util;
+
 $rootCert = './swish-root.crt'; // forwarded to guzzle's "verify" option
 $clientCert = './client-cert.crt'; // forwarded to guzzle's "cert" option
 $clientCertKey = ['./key.pem', 'key-password']; // forwarded to guzzle's "ssl_key" option
@@ -32,7 +35,28 @@ $response = $client->createPaymentRequest([
     'amount' => '100',
     'currency' => 'SEK',
 ]);
+
 $data = Util::decodeResponse($response);
+var_dump($data);
+
+//  Array
+//  (
+//      [errorCode] =>
+//      [errorMessage] =>
+//      [id] => 3F0CC97D3E7E4308AB357C506BCB0402
+//      [payeePaymentReference] => 12345
+//      [paymentReference] =>
+//      [callbackUrl] => https://localhost/swish
+//      [payerAlias] => 4671234768
+//      [payeeAlias] => 1231181189
+//      [amount] => 100
+//      [currency] => SEK
+//      [message] =>
+//      [status] => CREATED
+//      [dateCreated] => 2016-04-10T23:45:27.538Z
+//      [datePaid] =>
+//  )
+
 ```
 
 ## Notes
