@@ -12,26 +12,27 @@ composer install
 ```
 
 ## Usage
-Swish documentation as of 2016-01-23: https://www.getswish.se/content/uploads/2015/06/Guide-Certifikatsadministration_160118.pdf
+Swish documentation as of 2016-04-11: https://www.getswish.se/content/uploads/2015/06/Guide-Swish-API_160329.pdf
 
 Begin by obtaining the SSL certificates required by Swish. The Swish server itself uses a self-signed root
-certificated so a CA-bundle to verify its origin is recommended. You will also need a client certificate and
+certificated so a CA-bundle to verify its origin is needed. You will also need a client certificate and
 corresponding private key so the Swish server can identify you.
 
 ```php
-$guzzle = new \GuzzleHttp\Client();
+$rootCert = './swish-root.crt'; // forwarded to guzzle's "verify" option
+$clientCert = './client-cert.crt'; // forwarded to guzzle's "cert" option
+$clientCertKey = ['./key.pem', 'key-password']; // forwarded to guzzle's "ssl_key" option
+$client = Client::make($rootCert, $clientCert, $clientCertKey);
 
-// this is the production url - change if you want to use the test server
-$baseUrl = 'https://swicpc.bankgirot.se/swish-cpcapi/api/v1';
-
-// these options are forwarded to guzzle and may differ depending on your OS. Consult the guzzle documentation for
-// more infomation: http://docs.guzzlephp.org/en/latest/request-options.html
-$options = [
-    'verify' => './swish-root.crt',
-    'cert' => './client-cert.crt',
-    'ssl_key' => ['./key.pem', 'key-password'],
-];
-$client = new \HelmutSchneider\Swish\Client($guzzle, $baseUrl, $options);
+$response = $client->createPaymentRequest([
+    'callbackUrl' => 'https://localhost/swish',
+    'payeePaymentReference' => '12345',
+    'payerAlias' => '4671234768',
+    'payeeAlias' => '1231181189',
+    'amount' => '100',
+    'currency' => 'SEK',
+]);
+$data = Util::decodeResponse($response);
 ```
 
 ## Notes
