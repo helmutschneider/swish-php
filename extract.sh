@@ -9,5 +9,4 @@ if [ "$#" -ne 3 ]; then
 fi
 
 openssl pkcs12 -in "$1" -cacerts -nokeys -out ca.crt -passin "pass:$2"
-openssl pkcs12 -in "$1" -clcerts -nokeys -out cl.crt -passin "pass:$2"
-openssl pkcs12 -in "$1" -nocerts -out key.pem -passin "pass:$2" -passout "pass:$3"
+openssl pkcs12 -in "$1" -clcerts -out cl.pem -passin "pass:$2" -passout "pass:$3"

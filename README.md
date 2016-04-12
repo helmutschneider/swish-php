@@ -22,10 +22,13 @@ corresponding private key so the Swish server can identify you.
 use HelmutSchneider\Swish\Client;
 use HelmutSchneider\Swish\Util;
 
-$rootCert = './swish-root.crt'; // forwarded to guzzle's "verify" option
-$clientCert = './client-cert.crt'; // forwarded to guzzle's "cert" option
-$clientCertKey = ['./key.pem', 'key-password']; // forwarded to guzzle's "ssl_key" option
-$client = Client::make($rootCert, $clientCert, $clientCertKey);
+// Swish CA root cert
+$rootCert = 'path/to/swish-root.crt'; // forwarded to guzzle's "verify" option
+
+// .pem-bundle containing your client cert and it's corresponding private key. forwarded to guzzle's "cert" option
+$clientCert = ['path/to/client-cert.pem', 'password'];
+
+$client = Client::make($rootCert, $clientCert);
 
 $response = $client->createPaymentRequest([
     'callbackUrl' => 'https://localhost/swish',
@@ -59,11 +62,17 @@ var_dump($data);
 
 ```
 
-## Notes
+## Notes for OSX
 The bundled php & curl on OSX do not work well with the Swish api. This is probably because they were compiled with
-SecureTransport and not OpenSSL.
+SecureTransport and not openssl. If you have homebrew & xcode installed, you can compile php & curl with openssl like so:
+```shell
+brew install curl --with-openssl
+brew install php70 --with-homebrew-curl
+```
 
 ## Run the tests
+To run the tests you need certificates for the Swish test server. They are provided by Swish in a pkcs12-bundle
+which can be extracted with the "extract.sh" script included in this repository. Place the generated certs in `tests/_data`.
 ```shell
 vendor/bin/codecept run
 ```

@@ -99,23 +99,25 @@ class Client
     }
 
     /**
-     * @param string $rootCert path to the swish CA root cert. forwarded to guzzle's "verify" option.
-     * @param string $clientCert path to your client side cert. forwarded to guzzle's "cert" option
-     * @param string|string[] $clientCertKey path to the private key corresponding to the client cert.
-     *                        if the private key is password protected, pass an array ['PATH', 'PASSWORD']
+     * @param string $rootCert path to the swish CA root cert chain. forwarded to guzzle's "verify" option.
+     * @param string|string[] $clientCert path to a .pem-bundle containing the client side cert
+     *                                    and it's corresponding private key. If the private key is
+     *                                    password protected, pass an array ['PATH', 'PASSWORD'].
+     *                                    forwarded to guzzle's "cert" option.
      * @param string $baseUrl url to the swish api
+     * @param object $handler guzzle http handler
      * @return Client
      */
-    public static function make($rootCert, $clientCert, $clientCertKey, $baseUrl = self::SWISH_PRODUCTION_URL)
+    public static function make($rootCert, $clientCert, $baseUrl = self::SWISH_PRODUCTION_URL, $handler = null)
     {
-        $handler = new CurlHandler();
-        $stack = HandlerStack::create($handler);
-        $guzzle = new \GuzzleHttp\Client([
-            'handler' => $stack,
+        $config = [
             'verify' => $rootCert,
             'cert' => $clientCert,
-            'ssl_key' => $clientCertKey,
-        ]);
+        ];
+        if ($handler) {
+            $config['handler'] = $handler;
+        }
+        $guzzle = new \GuzzleHttp\Client($config);
         return new Client($guzzle, $baseUrl);
     }
 
