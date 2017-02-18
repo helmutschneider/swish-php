@@ -18,6 +18,11 @@ class ClientTest extends Test
 {
 
     /**
+     * @var Client
+     */
+    private $client;
+
+    /**
      * @var array
      */
     private $paymentRequest = [
@@ -29,26 +34,13 @@ class ClientTest extends Test
         'currency' => 'SEK',
     ];
 
-    /**
-     * @param $handler
-     * @return Client
-     */
-    public function makeClient($handler) {
+    public function setUp()
+    {
+        parent::setUp();
+
         $rootCert = __DIR__ . '/../_data/ca.crt';
         $clientCert = [__DIR__ . '/../_data/cl.pem', 'swish'];
-        return Client::make($rootCert, $clientCert, Client::SWISH_TEST_URL, $handler);
-    }
-
-    /**
-     * @return array
-     */
-    public function handlerProvider()
-    {
-        return [
-            [new CurlHandler(), function_exists('curl_exec')],
-            [new StreamHandler(), true],
-            [null, true], // let guzzle choose the handler
-        ];
+        $this->client = Client::make($rootCert, $clientCert, Client::SWISH_TEST_URL);
     }
 
     /**
@@ -64,21 +56,12 @@ class ClientTest extends Test
         return '46' . $nums;
     }
 
-    /**
-     * @dataProvider handlerProvider
-     * @param $handler
-     * @param bool $shouldTestWithHandler
-     */
-    public function testCreateGetPaymentRequestWithHandler($handler, $shouldTestWithHandler)
+    public function testCreateGetPaymentRequest()
     {
-        if (!$shouldTestWithHandler) {
-            $this->markTestSkipped('Skipping handler test with ' . get_class($handler));
-        }
-        $client = $this->makeClient($handler);
         $paymentRequest = $this->paymentRequest;
         $paymentRequest['payerAlias'] = $this->randomSwedishPhoneNumber();
         codecept_debug($paymentRequest['payerAlias']);
-        $res = $client->createPaymentRequest($paymentRequest);
+        $res = $this->client->createPaymentRequest($paymentRequest);
 
         codecept_debug($res->getStatusCode());
         codecept_debug($res->getHeaders());
@@ -87,7 +70,7 @@ class ClientTest extends Test
         $this->assertEquals(201, $res->getStatusCode());
 
         $id = Util::getPaymentRequestIdFromResponse($res);
-        $res = $client->getPaymentRequest($id);
+        $res = $this->client->getPaymentRequest($id);
         $body = Util::decodeResponse($res);
 
         codecept_debug($body);
