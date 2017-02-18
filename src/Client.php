@@ -113,6 +113,7 @@ class Client
         $config = [
             'verify' => $rootCert,
             'cert' => $clientCert,
+            'handler' => HandlerStack::create(new CurlHandler()),
         ];
         if ($handler) {
             $config['handler'] = $handler;
