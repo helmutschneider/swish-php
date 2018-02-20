@@ -12,7 +12,8 @@ composer install
 ```
 
 ## Usage
-Swish documentation as of 2016-04-11: https://www.getswish.se/content/uploads/2015/06/Guide-Swish-API_160329.pdf
+Swish documentation as of 2018-02-20: https://developer.getswish.se/content/uploads/2017/09/Guide-Swish-API-170324-utan-a%CC%88ndringsmarkering.pdf
+Test certificate bundle as of 2018-02-20: https://developer.getswish.se/content/uploads/2017/09/Guide__Testcertificates_171024.zip
 
 Begin by obtaining the SSL certificates required by Swish. The Swish server itself uses a self-signed root
 certificated so a CA-bundle to verify its origin is needed. You will also need a client certificate and
