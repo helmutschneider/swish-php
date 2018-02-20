@@ -8,8 +8,9 @@
 
 namespace HelmutSchneider\Swish\Tests;
 
+use PHPUnit\Framework\TestCase as BaseTestCase;
 
-class Test extends \Codeception\TestCase\Test
+class TestCase extends BaseTestCase
 {
 
 }

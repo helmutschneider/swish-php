@@ -12,7 +12,7 @@ namespace HelmutSchneider\Swish\Tests;
 use GuzzleHttp\Psr7\Response;
 use HelmutSchneider\Swish\Util;
 
-class UtilTest extends Test
+class UtilTest extends TestCase
 {
 
     public function testGetPaymentRequestIdFromResponse()

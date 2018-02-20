@@ -9,12 +9,10 @@
 namespace HelmutSchneider\Swish\Tests;
 
 
-use GuzzleHttp\Handler\CurlHandler;
-use GuzzleHttp\Handler\StreamHandler;
 use HelmutSchneider\Swish\Client;
 use HelmutSchneider\Swish\Util;
 
-class ClientTest extends Test
+class ClientTest extends TestCase
 {
 
     /**
@@ -38,8 +36,8 @@ class ClientTest extends Test
     {
         parent::setUp();
 
-        $rootCert = __DIR__ . '/../_data/ca.crt';
-        $clientCert = [__DIR__ . '/../_data/cl.pem', 'swish'];
+        $rootCert = __DIR__ . '/_data/ca.crt';
+        $clientCert = [__DIR__ . '/_data/cl.pem', 'swish'];
         $this->client = Client::make($rootCert, $clientCert, Client::SWISH_TEST_URL);
     }
 
@@ -60,20 +58,13 @@ class ClientTest extends Test
     {
         $paymentRequest = $this->paymentRequest;
         $paymentRequest['payerAlias'] = $this->randomSwedishPhoneNumber();
-        codecept_debug($paymentRequest['payerAlias']);
         $res = $this->client->createPaymentRequest($paymentRequest);
-
-        codecept_debug($res->getStatusCode());
-        codecept_debug($res->getHeaders());
-        codecept_debug((string)$res->getBody());
 
         $this->assertEquals(201, $res->getStatusCode());
 
         $id = Util::getPaymentRequestIdFromResponse($res);
         $res = $this->client->getPaymentRequest($id);
         $body = Util::decodeResponse($res);
-
-        codecept_debug($body);
 
         $this->assertEquals($id, $body['id']);
     }
