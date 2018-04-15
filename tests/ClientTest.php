@@ -8,9 +8,10 @@
 
 namespace HelmutSchneider\Swish\Tests;
 
-
 use HelmutSchneider\Swish\Client;
-use HelmutSchneider\Swish\Util;
+use HelmutSchneider\Swish\PaymentRequest;
+use HelmutSchneider\Swish\Refund;
+use HelmutSchneider\Swish\ValidationException;
 
 class ClientTest extends TestCase
 {
@@ -36,8 +37,8 @@ class ClientTest extends TestCase
     {
         parent::setUp();
 
-        $rootCert = __DIR__ . '/_data/ca.crt';
-        $clientCert = [__DIR__ . '/_data/cl.pem', 'swish'];
+        $rootCert = __DIR__ . '/_data/root.pem';
+        $clientCert = [__DIR__ . '/_data/client.pem', ''];
         $this->client = Client::make($rootCert, $clientCert, Client::SWISH_TEST_URL);
     }
 
@@ -56,17 +57,52 @@ class ClientTest extends TestCase
 
     public function testCreateGetPaymentRequest()
     {
-        $paymentRequest = $this->paymentRequest;
-        $paymentRequest['payerAlias'] = $this->randomSwedishPhoneNumber();
-        $res = $this->client->createPaymentRequest($paymentRequest);
-
-        $this->assertEquals(201, $res->getStatusCode());
-
-        $id = Util::getPaymentRequestIdFromResponse($res);
+        $paymentRequest = new PaymentRequest($this->paymentRequest);
+        $paymentRequest->payerAlias = $this->randomSwedishPhoneNumber();
+        $id = $this->client->createPaymentRequest($paymentRequest);
         $res = $this->client->getPaymentRequest($id);
-        $body = Util::decodeResponse($res);
+        $this->assertEquals($id, $res->id);
+    }
 
-        $this->assertEquals($id, $body['id']);
+    public function testThrowsValidationException()
+    {
+        $this->expectException(ValidationException::class);
+        $this->expectExceptionMessage('BE18: Payer alias is invalid');
+
+        $paymentRequest = new PaymentRequest($this->paymentRequest);
+        $paymentRequest->payerAlias = '123';
+
+        $this->client->createPaymentRequest($paymentRequest);
+    }
+
+    public function testCreateRefund()
+    {
+        $pr = new PaymentRequest([
+            'callbackUrl' => 'https://localhost/swish',
+            'payeePaymentReference' => '12345',
+            'payerAlias' => '4671234768',
+            'payeeAlias' => '1231181189',
+            'amount' => '100',
+        ]);
+
+        $id = $this->client->createPaymentRequest($pr);
+
+        // the test server automatically sets the request
+        // to "PAID" if we wait a couple of seconds.
+        sleep(5);
+
+        $res = $this->client->getPaymentRequest($id);
+
+        $id = $this->client->createRefund(new Refund([
+            'originalPaymentReference' => $res->paymentReference,
+            'payerAlias' => '1231181189',
+            'callbackUrl' => 'https://localhost/swish',
+            'amount' => '100',
+        ]));
+
+        $refund = $this->client->getRefund($id);
+
+        $this->assertInstanceOf(Refund::class, $refund);
     }
 
 }

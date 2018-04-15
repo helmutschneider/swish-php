@@ -15,32 +15,14 @@ use HelmutSchneider\Swish\Util;
 class UtilTest extends TestCase
 {
 
-    public function testGetPaymentRequestIdFromResponse()
+    public function testGetObjectIdFromResponse()
     {
         $id = 'ABC123';
         $response = new Response(200, [
             'Location' => 'http://localhost/paymentrequests/' . $id,
         ]);
 
-        $this->assertEquals($id, Util::getPaymentRequestIdFromResponse($response));
-    }
-
-    public function testGetRefundIdFromResponse()
-    {
-        $id = 'ABC123';
-        $response = new Response(200, [
-            'Location' => 'http://localhost/refunds/' . $id,
-        ]);
-
-        $this->assertEquals($id, Util::getRefundIdFromResponse($response));
-    }
-
-    public function testDecodeResponse()
-    {
-        $response = new Response(200, [], '{ "hello":"world" }');
-        $decoded = Util::decodeResponse($response);
-
-        $this->assertEquals(['hello' => 'world'], $decoded);
+        $this->assertEquals($id, Util::getObjectIdFromResponse($response));
     }
 
 }

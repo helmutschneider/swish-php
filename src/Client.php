@@ -8,13 +8,17 @@
 
 namespace HelmutSchneider\Swish;
 
-
 use GuzzleHttp\ClientInterface;
-use GuzzleHttp\Handler\CurlFactory;
+use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Handler\CurlHandler;
 use GuzzleHttp\HandlerStack;
 use Psr\Http\Message\ResponseInterface;
 
+/**
+ * Class Client
+ * @package HelmutSchneider\Swish
+ */
 class Client
 {
     const SWISH_PRODUCTION_URL = 'https://swicpc.bankgirot.se/swish-cpcapi/api/v1';
@@ -47,55 +51,109 @@ class Client
      * @param string $endpoint
      * @param array $options guzzle options
      * @return ResponseInterface
+     * @throws GuzzleException
      */
     protected function sendRequest($method, $endpoint, array $options = [])
     {
-        return $this->client->request($method, $this->baseUrl . $endpoint, array_merge([
-            'headers' => [
-                'Content-Type' => self::CONTENT_TYPE_JSON,
-                'Accept' => self::CONTENT_TYPE_JSON,
-            ],
-        ], $options));
+        try {
+            return $this->client->request($method, $this->baseUrl . $endpoint, array_merge([
+                'headers' => [
+                    'Content-Type' => self::CONTENT_TYPE_JSON,
+                    'Accept' => self::CONTENT_TYPE_JSON,
+                ],
+            ], $options));
+        }
+        catch (ClientException $e) {
+            return $e->getResponse();
+        }
     }
 
     /**
-     * @param array $data Payment request data
-     * @return ResponseInterface
+     * @param string[] $body
+     * @return string[]
      */
-    public function createPaymentRequest(array $data)
+    protected function filterRequestBody(array $body)
     {
-        return $this->sendRequest('POST', '/paymentrequests', [
-            'json' => $data,
+        $filtered = $body;
+        foreach ($filtered as $key => $value) {
+            if (empty($filtered[$key])) {
+                unset($filtered[$key]);
+            }
+        }
+        return $filtered;
+    }
+
+    /**
+     * @param ResponseInterface $response
+     * @throws ValidationException
+     */
+    protected function maybeThrowValidationException(ResponseInterface $response)
+    {
+        if ($response->getStatusCode() === 422) {
+            throw new ValidationException($response);
+        }
+    }
+
+    /**
+     * @param PaymentRequest $request
+     * @return string payment request id
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws ValidationException
+     */
+    public function createPaymentRequest(PaymentRequest $request)
+    {
+        $response = $this->sendRequest('POST', '/paymentrequests', [
+            'json' => $this->filterRequestBody((array) $request),
         ]);
+
+        $this->maybeThrowValidationException($response);
+
+        return Util::getObjectIdFromResponse($response);
     }
 
     /**
      * @param string $id Payment request id
-     * @return ResponseInterface
+     * @return PaymentRequest
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function getPaymentRequest($id)
     {
-        return $this->sendRequest('GET', '/paymentrequests/' . $id);
+        $response = $this->sendRequest('GET', '/paymentrequests/' . $id);
+
+        return new PaymentRequest(
+            json_decode((string) $response->getBody(), true)
+        );
     }
 
     /**
-     * @param array $data Refund data
-     * @return ResponseInterface
+     * @param Refund $refund
+     * @return string refund id
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws ValidationException
      */
-    public function createRefund(array $data)
+    public function createRefund(Refund $refund)
     {
-        return $this->sendRequest('POST', '/refunds', [
-            'json' => $data,
+        $response = $this->sendRequest('POST', '/refunds', [
+            'json' => $this->filterRequestBody((array) $refund),
         ]);
+
+        $this->maybeThrowValidationException($response);
+
+        return Util::getObjectIdFromResponse($response);
     }
 
     /**
      * @param string $id Refund id
-     * @return ResponseInterface
+     * @return Refund
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function getRefund($id)
     {
-        return $this->sendRequest('GET', '/refunds/' . $id);
+        $response = $this->sendRequest('GET', '/refunds/' . $id);
+
+        return new Refund(
+            json_decode((string) $response->getBody(), true)
+        );
     }
 
     /**

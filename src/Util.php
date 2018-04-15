@@ -8,9 +8,12 @@
 
 namespace HelmutSchneider\Swish;
 
-
 use Psr\Http\Message\ResponseInterface;
 
+/**
+ * Class Util
+ * @package HelmutSchneider\Swish
+ */
 class Util
 {
 
@@ -18,33 +21,15 @@ class Util
      * @param ResponseInterface $response
      * @return string
      */
-    public static function getPaymentRequestIdFromResponse(ResponseInterface $response)
+    public static function getObjectIdFromResponse(ResponseInterface $response)
     {
         $header = $response->getHeaderLine('Location');
-        preg_match('/\/paymentrequests\/(\w+)$/', $header, $matches);
-        return $matches[1];
-    }
 
-    /**
-     * @param ResponseInterface $response
-     * @return string
-     */
-    public static function getRefundIdFromResponse(ResponseInterface $response)
-    {
-        $header = $response->getHeaderLine('Location');
-        preg_match('/\/refunds\/(\w+)$/', $header, $matches);
-        return $matches[1];
-    }
+        if (preg_match('/\/([^\/]+)$/', $header, $matches) === 1) {
+            return $matches[1];
+        }
 
-    /**
-     * @param ResponseInterface $response
-     * @param bool $assoc decode into an associative array
-     * @return array|\stdClass
-     */
-    public static function decodeResponse(ResponseInterface $response, $assoc = true)
-    {
-        $body = (string) $response->getBody();
-        return json_decode($body, $assoc);
+        return '';
     }
 
 }
