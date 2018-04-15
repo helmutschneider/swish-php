@@ -105,4 +105,15 @@ class ClientTest extends TestCase
         $this->assertInstanceOf(Refund::class, $refund);
     }
 
+    public function testThrowsValidationExceptionOnInvalidSwishNumber()
+    {
+        $this->expectException(ValidationException::class);
+        $this->expectExceptionMessage('PA01: Parameter is not correct.');
+
+        $paymentRequest = new PaymentRequest($this->paymentRequest);
+        $paymentRequest->payeeAlias = '123';
+
+        $this->client->createPaymentRequest($paymentRequest);
+    }
+
 }

@@ -52,6 +52,7 @@ class Client
      * @param array $options guzzle options
      * @return ResponseInterface
      * @throws GuzzleException
+     * @throws ValidationException
      */
     protected function sendRequest($method, $endpoint, array $options = [])
     {
@@ -64,7 +65,12 @@ class Client
             ], $options));
         }
         catch (ClientException $e) {
-            return $e->getResponse();
+            switch ($e->getResponse()->getStatusCode()) {
+                case 403:
+                case 422:
+                    throw new ValidationException($e->getResponse());
+            }
+            throw $e;
         }
     }
 
@@ -84,17 +90,6 @@ class Client
     }
 
     /**
-     * @param ResponseInterface $response
-     * @throws ValidationException
-     */
-    protected function maybeThrowValidationException(ResponseInterface $response)
-    {
-        if ($response->getStatusCode() === 422) {
-            throw new ValidationException($response);
-        }
-    }
-
-    /**
      * @param PaymentRequest $request
      * @return string payment request id
      * @throws \GuzzleHttp\Exception\GuzzleException
@@ -106,8 +101,6 @@ class Client
             'json' => $this->filterRequestBody((array) $request),
         ]);
 
-        $this->maybeThrowValidationException($response);
-
         return Util::getObjectIdFromResponse($response);
     }
 
@@ -115,6 +108,7 @@ class Client
      * @param string $id Payment request id
      * @return PaymentRequest
      * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws ValidationException
      */
     public function getPaymentRequest($id)
     {
@@ -137,8 +131,6 @@ class Client
             'json' => $this->filterRequestBody((array) $refund),
         ]);
 
-        $this->maybeThrowValidationException($response);
-
         return Util::getObjectIdFromResponse($response);
     }
 
@@ -146,6 +138,7 @@ class Client
      * @param string $id Refund id
      * @return Refund
      * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws ValidationException
      */
     public function getRefund($id)
     {
