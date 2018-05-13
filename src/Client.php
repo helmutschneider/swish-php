@@ -21,8 +21,14 @@ use Psr\Http\Message\ResponseInterface;
  */
 class Client
 {
+    // Old infrastructure endpoints, will not work after 2018-06-29
     const SWISH_PRODUCTION_URL = 'https://swicpc.bankgirot.se/swish-cpcapi/api/v1';
     const SWISH_TEST_URL = 'https://mss.swicpc.bankgirot.se/swish-cpcapi/api/v1';
+    
+    // New infrastructure endpoints, requires new certificates (created after 2018-05-02)
+    const SWISH_4K_PRODUCTION_URL = 'https://cpc.getswish.net/swish-cpcapi/api/v1';
+    const SWISH_4K_TEST_URL = 'https://mss.cpc.bankgirot.se/swish-cpcapi/api/v1';
+    
     const CONTENT_TYPE_JSON = 'application/json';
 
     /**
