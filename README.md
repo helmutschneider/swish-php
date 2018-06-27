@@ -12,15 +12,15 @@ composer install
 ```
 
 ## Obtaining test certificates
-Swish documentation as of 2018-04-15: https://developer.getswish.se/content/uploads/2017/04/Merchants_Guide_Swish_API_180403.pdf
-Test certificate bundle as of 2018-04-15: https://developer.getswish.se/content/uploads/2017/09/Guide__Testcertificates_171024.zip
+Swish documentation as of 2018-06-27: https://developer.getswish.se/content/uploads/2017/04/MerchantsAPI_Getswish_180517_v1.91.pdf
+Test certificate bundle as of 2018-06-27: https://developer.getswish.se/content/uploads/2017/04/Merchants_Test-1.zip
 
 Begin by obtaining the SSL certificates required by Swish. The Swish server itself uses a self-signed root
 certificated so a CA-bundle to verify its origin is needed. You will also need a client certificate and
 corresponding private key so the Swish server can identify you.
 
-As of 2018-04-15 the test certificates are called `MSS1231181189.key`, `MSS1231181189.pem` and `Test Swish Root CA v1 Test.pem`.
-**You must concatenate `MSS1231181189.key` and `MSS1231181189.pem` together, otherwise they will not work with cURL.
+As of 2018-06-27 the test certificates are called `Swish Merchant Test Certificate 1231181189.key`, `Swish Merchant Test Certificate 1231181189.pem` and `Swish TLS Root CA.pem`.
+**You must concatenate `Swish Merchant Test Certificate 1231181189.key` and `Swish Merchant Test Certificate 1231181189.pem` together, otherwise they will not work with cURL.
 This bundle is your client certificate.**
 
 ## Usage
