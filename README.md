@@ -5,11 +5,28 @@ Swish-PHP is a small wrapper for the swish merchant api. See https://www.getswis
 - php 5.5.9 or newer with curl & openssl
 - composer
 
-## Installation
+## Installation via git
 ```shell
 git clone https://github.com/helmutschneider/swish-php.git
 composer install
 ```
+
+## Installation via composer
+Add this git as a custom repository to your composer.json:
+```json
+{
+  "require": {
+    "helmutschneider/swish-php": "dev-master"
+  },
+  "repositories": [
+    {
+      "type": "vcs",
+      "url": "https://github.com/helmutschneider/swish-php.git"
+    }
+  ]
+}
+```
+Now you may execute `composer update` as usual.
 
 ## Obtaining test certificates
 Swish documentation as of 2018-06-27: https://developer.getswish.se/content/uploads/2017/04/MerchantsAPI_Getswish_180517_v1.91.pdf
@@ -100,5 +117,5 @@ must obtain a PHP-version that is compiled with cURL linked against OpenSSL or s
 To run the tests you need certificates for the Swish test server. Place the root certificate in `tests/_data/root.pem` and
 the client certificate in `tests/_data/client.pem`.
 ```shell
-vendor/bin/codecept run
+vendor/bin/phpunit
 ```
