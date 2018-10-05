@@ -80,7 +80,7 @@ class Client
 When you have the SSL certificates ready you may instantiate the client:
 ```php
 use HelmutSchneider\Swish\Client;
-use HelmutSchneider\Swish\Util;
+use HelmutSchneider\Swish\PaymentRequest;
 
 // Swish CA root cert
 $rootCert = 'path/to/swish-root.crt'; // forwarded to guzzle's "verify" option
