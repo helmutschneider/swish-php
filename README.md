@@ -29,8 +29,9 @@ Add this git as a custom repository to your composer.json:
 Now you may execute `composer update` as usual.
 
 ## Obtaining test certificates
-Swish documentation as of 2018-06-27: https://developer.getswish.se/content/uploads/2017/04/MerchantsAPI_Getswish_180517_v1.91.pdf
-Test certificate bundle as of 2018-06-27: https://developer.getswish.se/content/uploads/2017/04/Merchants_Test-1.zip
+Swish documentation as of 2018-06-27: https://developer.getswish.se/content/uploads/2017/04/MerchantsAPI_Getswish_180517_v1.91.pdf  
+Test certificate bundle as of 2018-10-01:  
+https://developer.getswish.se/content/uploads/2018/10/Merchants_Test.zip
 
 Begin by obtaining the SSL certificates required by Swish. The Swish server itself uses a self-signed root
 certificated so a CA-bundle to verify its origin is needed. You will also need a client certificate and
