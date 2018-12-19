@@ -81,6 +81,21 @@ class Refund
     public $datePaid = '';
 
     /**
+     * @var string
+     */
+    public $errorCode = '';
+
+    /**
+     * @var string
+     */
+    public $errorMessage = '';
+
+    /**
+     * @var string
+     */
+    public $additionalInformation = '';
+
+    /**
      * Refund constructor.
      * @param string[] $data
      */
