@@ -6,6 +6,10 @@
         {
             "name": "Johan Björk",
             "email": "johanimon@gmail.com"
+        },
+        {
+            "name": "Tommie Lagerroos",
+            "email": "tommie@lagerroos.nu"
         }
     ],
     "minimum-stability": "stable",

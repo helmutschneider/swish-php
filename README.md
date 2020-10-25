@@ -1,13 +1,19 @@
 # Swish-PHP
 Swish-PHP is a small wrapper for the swish merchant api. See https://www.getswish.se/handel/ for more information.
 
+## Guzzle 7 support
+This fork adds support for Guzzle 7. Furthermore it supports the new V2 PUT-endpoints of Payment- and Refund request.
+
+### Payout request support
+This fork adds support for Payout Requests.
+
 ## Dependencies
 - php 5.5.9 or newer with curl & openssl
 - composer
 
 ## Installation via git
 ```shell
-git clone https://github.com/helmutschneider/swish-php.git
+git clone https://github.com/altitudeevents/swish-php.git
 composer install
 ```
 
@@ -21,7 +27,7 @@ Add this git as a custom repository to your composer.json:
   "repositories": [
     {
       "type": "vcs",
-      "url": "https://github.com/helmutschneider/swish-php.git"
+      "url": "https://github.com/altitudeevents/swish-php.git"
     }
   ]
 }
@@ -120,3 +126,7 @@ the client certificate in `tests/_data/client.pem`.
 ```shell
 vendor/bin/phpunit
 ```
+
+### Altitude Events
+We're a travel firm arranging trips for mostly youths in Sweden. We love to create magic in an old industry.
+If interested in working with us for your next cooperate trip, reach out to Tommie at tommie [at] altitudeevents.se.
