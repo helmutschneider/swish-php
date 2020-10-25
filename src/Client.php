@@ -17,13 +17,26 @@ use Psr\Http\Message\ResponseInterface;
 
 /**
  * Class Client
+ *
  * @package HelmutSchneider\Swish
  */
 class Client
 {
-    const SWISH_PRODUCTION_URL = 'https://cpc.getswish.net/swish-cpcapi/api/v1';
-    const SWISH_TEST_URL = 'https://mss.cpc.getswish.net/swish-cpcapi/api/v1';
+    const SWISH_PRODUCTION_URL = 'https://cpc.getswish.net/swish-cpcapi/api';
+    const SWISH_TEST_URL = 'https://mss.cpc.getswish.net/swish-cpcapi/api';
     const CONTENT_TYPE_JSON = 'application/json';
+    /**
+     * The serial number for the client certificate
+     *
+     * @var string
+     */
+    public static $certificateSerialNumber = '';
+    /**
+     * The private key of the client certificate bundle.
+     *
+     * @var resource
+     */
+    public static $certificatePrivateKey;
 
     /**
      * @var \GuzzleHttp\ClientInterface
@@ -37,6 +50,7 @@ class Client
 
     /**
      * Client constructor.
+     *
      * @param ClientInterface $client
      * @param string $baseUrl
      */
@@ -52,20 +66,21 @@ class Client
      * @param array $options guzzle options
      * @return ResponseInterface
      * @throws GuzzleException
-     * @throws ValidationException
+     * @throws ValidationException|CertificateException
      */
     protected function sendRequest($method, $endpoint, array $options = [])
     {
         try {
-            return $this->client->request($method, $this->baseUrl . $endpoint, array_merge([
+            return $this->client->request($method, $endpoint, array_merge([
                 'headers' => [
                     'Content-Type' => self::CONTENT_TYPE_JSON,
                     'Accept' => self::CONTENT_TYPE_JSON,
                 ],
             ], $options));
-        }
-        catch (ClientException $e) {
+        } catch (ClientException $e) {
             switch ($e->getResponse()->getStatusCode()) {
+                case 400:
+                    throw new CertificateException($e->getResponse());
                 case 403:
                 case 422:
                     throw new ValidationException($e->getResponse());
@@ -93,12 +108,12 @@ class Client
      * @param PaymentRequest $request
      * @return string payment request id
      * @throws \GuzzleHttp\Exception\GuzzleException
-     * @throws ValidationException
+     * @throws ValidationException|CertificateException
      */
     public function createPaymentRequest(PaymentRequest $request)
     {
-        $response = $this->sendRequest('POST', '/paymentrequests', [
-            'json' => $this->filterRequestBody((array) $request),
+        $response = $this->sendRequest('POST', '/v1/paymentrequests', [
+            'json' => $this->filterRequestBody((array)$request),
         ]);
 
         return Util::getObjectIdFromResponse($response);
@@ -108,27 +123,69 @@ class Client
      * @param string $id Payment request id
      * @return PaymentRequest
      * @throws \GuzzleHttp\Exception\GuzzleException
-     * @throws ValidationException
+     * @throws ValidationException|CertificateException
      */
     public function getPaymentRequest($id)
     {
-        $response = $this->sendRequest('GET', '/paymentrequests/' . $id);
+        $response = $this->sendRequest('GET', '/v1/paymentrequests/' . $id);
 
         return new PaymentRequest(
-            json_decode((string) $response->getBody(), true)
+            json_decode((string)$response->getBody(), true)
         );
+    }
+
+    /**
+     * @param PaymentRequest $paymentRequest
+     * @param string $instructionUUID - 32 chars uppercase in format ^[0-9A-F]{32}$. Leave blank to let PHP automatically generate a instruction UUID
+     * @return string
+     * @throws CertificateException
+     * @throws GuzzleException
+     * @throws ValidationException
+     */
+    public function createPaymentRequestV2(PaymentRequest $paymentRequest, $instructionUUID = '')
+    {
+        if($instructionUUID === '') {
+            $instructionUUID = $this->generateUUID();
+        }
+
+        $response = $this->sendRequest('PUT', '/v2/paymentrequests/'.$instructionUUID, [
+            'json' => $this->filterRequestBody((array)$paymentRequest),
+        ]);
+
+        return Util::getObjectIdFromResponse($response);
     }
 
     /**
      * @param Refund $refund
      * @return string refund id
      * @throws \GuzzleHttp\Exception\GuzzleException
-     * @throws ValidationException
+     * @throws ValidationException|CertificateException
      */
     public function createRefund(Refund $refund)
     {
-        $response = $this->sendRequest('POST', '/refunds', [
-            'json' => $this->filterRequestBody((array) $refund),
+        $response = $this->sendRequest('POST', '/v1/refunds', [
+            'json' => $this->filterRequestBody((array)$refund),
+        ]);
+
+        return Util::getObjectIdFromResponse($response);
+    }
+
+    /**
+     * @param Refund $refund
+     * @param string $instructionUUID - 32 chars uppercase in format ^[0-9A-F]{32}$. Leave blank to let PHP automatically generate a instruction UUID
+     * @return string
+     * @throws CertificateException
+     * @throws GuzzleException
+     * @throws ValidationException
+     */
+    public function createRefundV2(Refund $refund, $instructionUUID = '')
+    {
+        if($instructionUUID === '') {
+            $instructionUUID = $this->generateUUID();
+        }
+
+        $response = $this->sendRequest('PUT', '/v2/refunds/'.$instructionUUID, [
+            'json' => $this->filterRequestBody((array)$refund),
         ]);
 
         return Util::getObjectIdFromResponse($response);
@@ -138,15 +195,59 @@ class Client
      * @param string $id Refund id
      * @return Refund
      * @throws \GuzzleHttp\Exception\GuzzleException
-     * @throws ValidationException
+     * @throws ValidationException|CertificateException
      */
     public function getRefund($id)
     {
-        $response = $this->sendRequest('GET', '/refunds/' . $id);
+        $response = $this->sendRequest('GET', '/v1/refunds/' . $id);
 
         return new Refund(
-            json_decode((string) $response->getBody(), true)
+            json_decode((string)$response->getBody(), true)
         );
+    }
+
+    /**
+     * Create a Swish payout request.
+     *
+     * @param PayoutRequest $payoutRequest
+     * @return string
+     * @throws CertificateException
+     * @throws GuzzleException
+     * @throws ValidationException
+     */
+    public function createPayoutRequest(PayoutRequest $payoutRequest)
+    {
+        $response = $this->sendRequest('POST', '/v1/payouts', [
+            'json' => $this->filterRequestBody((array)$payoutRequest),
+        ]);
+
+        return Util::getObjectIdFromResponse($response);
+    }
+
+    /**
+     * Get the current status from a given payout request.
+     *
+     * @param $payoutInstructionUUID - The initially set Payout Instruction UUID to query.
+     * @return PayoutRequest
+     * @throws CertificateException
+     * @throws GuzzleException
+     * @throws ValidationException
+     */
+    public function getPayoutRequest($payoutInstructionUUID)
+    {
+        $response = $this->sendRequest('GET', '/v1/payouts/' . $payoutInstructionUUID);
+
+        return new PayoutRequest(
+            json_decode((string)$response->getBody(), true)
+        );
+    }
+
+    /**
+     * @return string - A time based UUID
+     */
+    private function generateUUID()
+    {
+        return strtoupper(md5(time()));
     }
 
     /**
@@ -165,7 +266,22 @@ class Client
             'verify' => $rootCert,
             'cert' => $clientCert,
             'handler' => HandlerStack::create(new CurlHandler()),
+            'base_uri' => $baseUrl
         ];
+
+        $certificateBody = file_get_contents($clientCert);
+        if ($certificateBody) {
+            $decodedCert = openssl_x509_parse($certificateBody, true);
+            if ($decodedCert) {
+                static::$certificateSerialNumber = $decodedCert['serialNumber'];
+            }
+
+            $privateKey = openssl_pkey_get_private($certificateBody);
+            if ($privateKey) {
+                static::$certificatePrivateKey = $privateKey;
+            }
+        }
+
         if ($handler) {
             $config['handler'] = $handler;
         }
