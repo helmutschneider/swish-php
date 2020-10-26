@@ -258,7 +258,8 @@ class Client
      *                                    forwarded to guzzle's "cert" option.
      * @param string $baseUrl url to the swish api
      * @param object $handler guzzle http handler
-     * @param string $signingCert - Path to .pem containing signing certificate and private key used for Payouts.
+     * @param string|string[] $signingCert - Path to .pem containing signing certificate and private key used for Payouts.
+     *                                      You can supply a password just like with the $clientCert
      * @return Client
      */
     public static function make($rootCert, $clientCert, $baseUrl = self::SWISH_PRODUCTION_URL, $handler = null, $signingCert = '')
@@ -271,6 +272,10 @@ class Client
         ];
 
         if($signingCert !== '') {
+            if(is_array($signingCert)) {
+                $passphrase = $signingCert[1];
+                $signingCert = $signingCert[0];
+            }
             $certificateBody = file_get_contents($signingCert);
             if ($certificateBody) {
                 $decodedCert = openssl_x509_parse($certificateBody, true);
@@ -280,7 +285,11 @@ class Client
             }
 
             $keyBody = file_get_contents($signingCert);
-            $privateKey = openssl_pkey_get_private($keyBody);
+            if(isset($passphrase)) {
+                $privateKey = openssl_pkey_get_private($keyBody, $passphrase);
+            } else {
+                $privateKey = openssl_pkey_get_private($keyBody);
+            }
             if ($privateKey) {
                 static::$certificatePrivateKey = $privateKey;
             }
