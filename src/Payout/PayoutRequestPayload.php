@@ -103,6 +103,6 @@ class PayoutRequestPayload
         if (!isset($this->payoutInstructionUUID)) {
             $this->payoutInstructionUUID = strtoupper(md5(time()));
         }
-        return $this->payoutInstructionUUID;
+        return $this;
     }
 }
