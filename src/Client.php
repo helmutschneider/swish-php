@@ -121,6 +121,22 @@ class Client
     }
 
     /**
+     * Cancel a given Payment Request by its id
+     * @param string $id Payment request id to cancel
+     * @return PaymentRequest
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws ValidationException|CertificateException
+     */
+    public function cancelPaymentRequest($id)
+    {
+        $response = $this->sendRequest('PATCH', 'v1/paymentrequests/' . $id);
+
+        return new PaymentRequest(
+            json_decode((string)$response->getBody(), true)
+        );
+    }
+
+    /**
      * @param string $id Payment request id
      * @return PaymentRequest
      * @throws \GuzzleHttp\Exception\GuzzleException
