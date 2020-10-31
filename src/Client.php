@@ -112,7 +112,7 @@ class Client
      */
     public function createPaymentRequest(PaymentRequest $request)
     {
-        $response = $this->sendRequest('POST', '/v1/paymentrequests', [
+        $response = $this->sendRequest('POST', 'v1/paymentrequests', [
             'json' => $this->filterRequestBody((array)$request),
         ]);
 
@@ -127,7 +127,7 @@ class Client
      */
     public function getPaymentRequest($id)
     {
-        $response = $this->sendRequest('GET', '/v1/paymentrequests/' . $id);
+        $response = $this->sendRequest('GET', 'v1/paymentrequests/' . $id);
 
         return new PaymentRequest(
             json_decode((string)$response->getBody(), true)
@@ -148,7 +148,7 @@ class Client
             $instructionUUID = $this->generateUUID();
         }
 
-        $response = $this->sendRequest('PUT', '/v2/paymentrequests/'.$instructionUUID, [
+        $response = $this->sendRequest('PUT', 'v2/paymentrequests/'.$instructionUUID, [
             'json' => $this->filterRequestBody((array)$paymentRequest),
         ]);
 
@@ -163,7 +163,7 @@ class Client
      */
     public function createRefund(Refund $refund)
     {
-        $response = $this->sendRequest('POST', '/v1/refunds', [
+        $response = $this->sendRequest('POST', 'v1/refunds', [
             'json' => $this->filterRequestBody((array)$refund),
         ]);
 
@@ -184,7 +184,7 @@ class Client
             $instructionUUID = $this->generateUUID();
         }
 
-        $response = $this->sendRequest('PUT', '/v2/refunds/'.$instructionUUID, [
+        $response = $this->sendRequest('PUT', 'v2/refunds/'.$instructionUUID, [
             'json' => $this->filterRequestBody((array)$refund),
         ]);
 
@@ -199,7 +199,7 @@ class Client
      */
     public function getRefund($id)
     {
-        $response = $this->sendRequest('GET', '/v1/refunds/' . $id);
+        $response = $this->sendRequest('GET', 'v1/refunds/' . $id);
 
         return new Refund(
             json_decode((string)$response->getBody(), true)
@@ -217,7 +217,7 @@ class Client
      */
     public function createPayoutRequest(PayoutRequest $payoutRequest)
     {
-        $response = $this->sendRequest('POST', '/v1/payouts', [
+        $response = $this->sendRequest('POST', 'v1/payouts', [
             'json' => $this->filterRequestBody((array)$payoutRequest),
         ]);
 
@@ -235,7 +235,7 @@ class Client
      */
     public function getPayoutRequest($payoutInstructionUUID)
     {
-        $response = $this->sendRequest('GET', '/v1/payouts/' . $payoutInstructionUUID);
+        $response = $this->sendRequest('GET', 'v1/payouts/' . $payoutInstructionUUID);
 
         return new PayoutRequest(
             json_decode((string)$response->getBody(), true)
