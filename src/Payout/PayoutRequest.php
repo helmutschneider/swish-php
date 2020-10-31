@@ -3,6 +3,8 @@
 
 namespace HelmutSchneider\Swish\Payout;
 
+use HelmutSchneider\Swish\CertificateException;
+use HelmutSchneider\Swish\Client;
 use RuntimeException;
 
 /**
@@ -66,7 +68,7 @@ class PayoutRequest
      * Make sure to create a client and set certificates before creating the class.
      *
      * @param array $data
-     * @throws CertificateException
+     * @throws CertificateException()
      * @returns string|false - The payoutInstructionUUID or false if payload was not supplied.
      */
     public function __construct($data = [])
