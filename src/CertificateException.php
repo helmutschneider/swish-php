@@ -32,11 +32,11 @@ class CertificateException extends \Exception
     {
         if (isset($statusCode)) {
             parent::__construct(
-                sprintf('%s %s:', $statusCode, $message)
+                sprintf('%s %s:', $statusCode, is_string($message) ? $message : $message->getBody())
             );
         } else {
             parent::__construct(
-                sprintf('%s:', $message)
+                sprintf('%s:', is_string($message) ? $message : $message->getBody())
             );
         }
     }

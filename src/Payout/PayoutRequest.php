@@ -80,15 +80,15 @@ class PayoutRequest
         }
 
         if (isset($data['callbackUrl'])) {
-            $this->callbackUrl;
+            $this->callbackUrl = $data['callbackUrl'];
         }
 
         if (isset($data['payload'])) {
-            $payload = new PayoutRequestPayload($data['payload']);
-            $payloadHash = hash('SHA512', json_encode($payload));
+            $this->payload = new PayoutRequestPayload($data['payload']);
+            $payloadHash = hash('SHA512', json_encode($this->payload));
             $signedHash = $this->encrypt($payloadHash);
             $this->signature = base64_encode($signedHash);
-            return $payload;
+            return $this;
         }
 
         return false;
