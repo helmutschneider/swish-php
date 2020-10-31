@@ -37,8 +37,8 @@ class Util
         $paymentRequestToken = null;
         $header = $response->getHeaderLine('PaymentRequestToken');
 
-        if (preg_match('/\/([^\/]+)$/', $header, $matches) === 1) {
-            $paymentRequestToken = $matches[1];
+        if (isset($header) && is_string($header) && strlen($header) > 0) {
+            $paymentRequestToken = $header;
         }
 
         return [
