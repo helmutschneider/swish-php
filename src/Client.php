@@ -22,8 +22,8 @@ use Psr\Http\Message\ResponseInterface;
  */
 class Client
 {
-    const SWISH_PRODUCTION_URL = 'https://cpc.getswish.net/swish-cpcapi/api';
-    const SWISH_TEST_URL = 'https://mss.cpc.getswish.net/swish-cpcapi/api';
+    const SWISH_PRODUCTION_URL = 'https://cpc.getswish.net/swish-cpcapi/api/';
+    const SWISH_TEST_URL = 'https://mss.cpc.getswish.net/swish-cpcapi/api/';
     const CONTENT_TYPE_JSON = 'application/json';
     /**
      * The serial number for the client certificate
