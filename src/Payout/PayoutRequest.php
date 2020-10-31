@@ -1,10 +1,8 @@
 <?php
 
 
-namespace HelmutSchneider\Swish;
+namespace HelmutSchneider\Swish\Payout;
 
-
-use HelmutSchneider\Swish\Payout\PayoutRequestPayload;
 use RuntimeException;
 
 /**
