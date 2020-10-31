@@ -1,5 +1,5 @@
 {
-    "name": "helmutschneider/swish-php",
+    "name": "altitudeevents/swish-php",
     "description": "PHP-wrapper for the Swish api",
     "license": "MIT",
     "authors": [
