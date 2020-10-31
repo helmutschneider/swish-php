@@ -129,11 +129,13 @@ class Client
      */
     public function cancelPaymentRequest($id)
     {
-        $response = $this->sendRequest('PATCH', 'v1/paymentrequests/' . $id);
+        $response = $this->sendRequest('PATCH', 'v1/paymentrequests/' . $id, [
+            'json' => [
+                ['op' => 'replace', 'path' => '/status', 'value' => 'cancelled']
+            ]
+        ]);
 
-        return new PaymentRequest(
-            json_decode((string)$response->getBody(), true)
-        );
+        return new json_decode((string)$response->getBody(), true);
     }
 
     /**
