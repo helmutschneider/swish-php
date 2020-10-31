@@ -13,6 +13,7 @@ use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Handler\CurlHandler;
 use GuzzleHttp\HandlerStack;
+use HelmutSchneider\Swish\Payout\PayoutRequest;
 use Psr\Http\Message\ResponseInterface;
 
 /**
