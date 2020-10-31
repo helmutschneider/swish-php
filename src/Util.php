@@ -32,4 +32,19 @@ class Util
         return '';
     }
 
+    public static function getPaymentRequestIdsFromResponse(ResponseInterface $response) {
+        $id = static::getObjectIdFromResponse($response);
+        $paymentRequestToken = null;
+        $header = $response->getHeaderLine('PaymentRequestToken');
+
+        if (preg_match('/\/([^\/]+)$/', $header, $matches) === 1) {
+            $paymentRequestToken = $matches[1];
+        }
+
+        return [
+            'id' => $id,
+            'paymentRequestToken' => $paymentRequestToken
+        ];
+    }
+
 }

@@ -107,7 +107,7 @@ class Client
 
     /**
      * @param PaymentRequest $request
-     * @return string payment request id
+     * @return array payment request id
      * @throws \GuzzleHttp\Exception\GuzzleException
      * @throws ValidationException|CertificateException
      */
@@ -117,7 +117,7 @@ class Client
             'json' => $this->filterRequestBody((array)$request),
         ]);
 
-        return Util::getObjectIdFromResponse($response);
+        return Util::getPaymentRequestIdsFromResponse($response);
     }
 
     /**
@@ -154,7 +154,7 @@ class Client
     /**
      * @param PaymentRequest $paymentRequest
      * @param string $instructionUUID - 32 chars uppercase in format ^[0-9A-F]{32}$. Leave blank to let PHP automatically generate a instruction UUID
-     * @return string
+     * @return array
      * @throws CertificateException
      * @throws GuzzleException
      * @throws ValidationException
@@ -169,7 +169,7 @@ class Client
             'json' => $this->filterRequestBody((array)$paymentRequest),
         ]);
 
-        return Util::getObjectIdFromResponse($response);
+        return Util::getPaymentRequestIdsFromResponse($response);
     }
 
     /**
