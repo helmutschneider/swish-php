@@ -262,6 +262,22 @@ class Client
     }
 
     /**
+     * Generate a QR Code for a given payment request token.
+     * @param QRCodeRequest $QRCodeRequest
+     * @return \Psr\Http\Message\StreamInterface
+     * @throws CertificateException
+     * @throws GuzzleException
+     * @throws ValidationException
+     */
+    public function createQRCode(QRCodeRequest $QRCodeRequest)
+    {
+        $response = $this->sendRequest('POST', 'v1/commerce', [
+            'json' => $this->filterRequestBody((array)$QRCodeRequest),
+        ]);
+        return $response->getBody();
+    }
+
+    /**
      * @return string - A time based UUID
      */
     private function generateUUID()
