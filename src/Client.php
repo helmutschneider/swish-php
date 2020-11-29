@@ -25,6 +25,7 @@ class Client
 {
     const SWISH_PRODUCTION_URL = 'https://cpc.getswish.net/swish-cpcapi/api/';
     const SWISH_TEST_URL = 'https://mss.cpc.getswish.net/swish-cpcapi/api/';
+    const SWISH_QR_URL = 'https://mpc.getswish.net/qrg-swish/api/';
     const CONTENT_TYPE_JSON = 'application/json';
     /**
      * The serial number for the client certificate
@@ -43,6 +44,11 @@ class Client
      * @var \GuzzleHttp\ClientInterface
      */
     private $client;
+
+    /**
+     * @var ClientInterface
+     */
+    private $qrCodeClient;
 
     /**
      * @var string
@@ -273,7 +279,7 @@ class Client
     {
         $response = $this->sendRequest('POST', 'v1/commerce', [
             'json' => $this->filterRequestBody((array)$QRCodeRequest),
-        ]);
+        ], static::SWISH_QR_URL);
         return $response->getBody();
     }
 
