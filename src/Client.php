@@ -46,11 +46,6 @@ class Client
     private $client;
 
     /**
-     * @var ClientInterface
-     */
-    private $qrCodeClient;
-
-    /**
      * @var string
      */
     private $baseUrl;
