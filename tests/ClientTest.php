@@ -33,7 +33,7 @@ class ClientTest extends TestCase
         'currency' => 'SEK',
     ];
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
