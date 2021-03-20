@@ -53,7 +53,7 @@ class ValidationException extends \Exception
     /**
      * @return ResponseInterface
      */
-    public function getResponse()
+    public function getResponse(): ResponseInterface
     {
         return $this->response;
     }
@@ -61,7 +61,7 @@ class ValidationException extends \Exception
     /**
      * @return Error[]
      */
-    public function getErrors()
+    public function getErrors(): array
     {
         return $this->errors;
     }

@@ -40,7 +40,7 @@ class Client
      * @param ClientInterface $client
      * @param string $baseUrl
      */
-    function __construct(ClientInterface $client, $baseUrl)
+    function __construct(ClientInterface $client, string $baseUrl)
     {
         $this->client = $client;
         $this->baseUrl = $baseUrl;
@@ -54,7 +54,7 @@ class Client
      * @throws GuzzleException
      * @throws ValidationException
      */
-    protected function sendRequest($method, $endpoint, array $options = [])
+    protected function sendRequest(string $method, string $endpoint, array $options = []): ResponseInterface
     {
         try {
             return $this->client->request($method, $this->baseUrl . $endpoint, array_merge([
@@ -78,7 +78,7 @@ class Client
      * @param string[] $body
      * @return string[]
      */
-    protected function filterRequestBody(array $body)
+    protected function filterRequestBody(array $body): array
     {
         $filtered = $body;
         foreach ($filtered as $key => $value) {
@@ -95,7 +95,7 @@ class Client
      * @throws \GuzzleHttp\Exception\GuzzleException
      * @throws ValidationException
      */
-    public function createPaymentRequest(PaymentRequest $request)
+    public function createPaymentRequest(PaymentRequest $request): string
     {
         $response = $this->sendRequest('POST', '/paymentrequests', [
             'json' => $this->filterRequestBody((array) $request),
@@ -110,7 +110,7 @@ class Client
      * @throws \GuzzleHttp\Exception\GuzzleException
      * @throws ValidationException
      */
-    public function getPaymentRequest($id)
+    public function getPaymentRequest(string $id): PaymentRequest
     {
         $response = $this->sendRequest('GET', '/paymentrequests/' . $id);
 
@@ -125,7 +125,7 @@ class Client
      * @throws \GuzzleHttp\Exception\GuzzleException
      * @throws ValidationException
      */
-    public function createRefund(Refund $refund)
+    public function createRefund(Refund $refund): string
     {
         $response = $this->sendRequest('POST', '/refunds', [
             'json' => $this->filterRequestBody((array) $refund),
@@ -140,7 +140,7 @@ class Client
      * @throws \GuzzleHttp\Exception\GuzzleException
      * @throws ValidationException
      */
-    public function getRefund($id)
+    public function getRefund(string $id): Refund
     {
         $response = $this->sendRequest('GET', '/refunds/' . $id);
 
@@ -150,17 +150,23 @@ class Client
     }
 
     /**
-     * @param string $rootCert path to the swish CA root cert chain. forwarded to guzzle's "verify" option.
+     * @param string|bool $rootCert path to the swish CA root cert chain, or boolean true to use the
+     *                                    operating system CA bundle.
+     *                                    forwarded to guzzle's "verify" option.
      * @param string|string[] $clientCert path to a .pem-bundle containing the client side cert
      *                                    and it's corresponding private key. If the private key is
      *                                    password protected, pass an array ['PATH', 'PASSWORD'].
      *                                    forwarded to guzzle's "cert" option.
      * @param string $baseUrl url to the swish api
-     * @param object $handler guzzle http handler
+     * @param ?object $handler guzzle http handler
      * @return Client
      */
-    public static function make($rootCert, $clientCert, $baseUrl = self::SWISH_PRODUCTION_URL, $handler = null)
-    {
+    public static function make(
+        $rootCert,
+        $clientCert,
+        string $baseUrl = self::SWISH_PRODUCTION_URL,
+        ?object $handler = null
+    ): Client {
         $config = [
             'verify' => $rootCert,
             'cert' => $clientCert,
