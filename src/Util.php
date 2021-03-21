@@ -21,7 +21,7 @@ class Util
      * @param ResponseInterface $response
      * @return string
      */
-    public static function getObjectIdFromResponse(ResponseInterface $response)
+    public static function getObjectIdFromResponse(ResponseInterface $response): string
     {
         $header = $response->getHeaderLine('Location');
 

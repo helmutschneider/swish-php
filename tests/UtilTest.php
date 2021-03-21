@@ -15,7 +15,7 @@ use HelmutSchneider\Swish\Util;
 class UtilTest extends TestCase
 {
 
-    public function testGetObjectIdFromResponse()
+    public function testGetObjectIdFromResponse(): void
     {
         $id = 'ABC123';
         $response = new Response(200, [

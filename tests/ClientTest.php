@@ -33,7 +33,7 @@ class ClientTest extends TestCase
         'currency' => 'SEK',
     ];
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -46,7 +46,7 @@ class ClientTest extends TestCase
      * Randomize a 10-digit phone number
      * @return string
      */
-    public function randomSwedishPhoneNumber()
+    public function randomSwedishPhoneNumber(): string
     {
         $nums = '';
         for ($i = 0; $i < 8; $i++) {
@@ -55,7 +55,7 @@ class ClientTest extends TestCase
         return '46' . $nums;
     }
 
-    public function testCreateGetPaymentRequest()
+    public function testCreateGetPaymentRequest(): void
     {
         $paymentRequest = new PaymentRequest($this->paymentRequest);
         $paymentRequest->payerAlias = $this->randomSwedishPhoneNumber();
@@ -64,7 +64,7 @@ class ClientTest extends TestCase
         $this->assertEquals($id, $res->id);
     }
 
-    public function testThrowsValidationException()
+    public function testThrowsValidationException(): void
     {
         $this->expectException(ValidationException::class);
 
@@ -74,7 +74,7 @@ class ClientTest extends TestCase
         $this->client->createPaymentRequest($paymentRequest);
     }
 
-    public function testCreateRefund()
+    public function testCreateRefund(): void
     {
         $pr = new PaymentRequest([
             'callbackUrl' => 'https://localhost/swish',
@@ -97,12 +97,13 @@ class ClientTest extends TestCase
             'payerAlias' => '1231181189',
             'callbackUrl' => 'https://localhost/swish',
             'amount' => '100',
+            'message' => 'Some test message',
         ]));
 
         $this->assertNotEmpty($id);
     }
 
-    public function testThrowsValidationExceptionOnInvalidSwishNumber()
+    public function testThrowsValidationExceptionOnInvalidSwishNumber(): void
     {
         $this->expectException(ValidationException::class);
 
