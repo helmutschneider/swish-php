@@ -97,6 +97,7 @@ class ClientTest extends TestCase
             'payerAlias' => '1231181189',
             'callbackUrl' => 'https://localhost/swish',
             'amount' => '100',
+            'message' => 'Some test message',
         ]));
 
         $this->assertNotEmpty($id);
