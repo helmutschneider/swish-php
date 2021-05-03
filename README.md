@@ -16,7 +16,7 @@ Add this git as a custom repository to your composer.json:
 ```json
 {
   "require": {
-    "helmutschneider/swish-php": "dev-master"
+    "helmutschneider/swish-php": "^2.0"
   },
   "repositories": [
     {
