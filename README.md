@@ -12,21 +12,9 @@ composer install
 ```
 
 ## Installation via composer
-Add this git as a custom repository to your composer.json:
-```json
-{
-  "require": {
-    "helmutschneider/swish-php": "^2.0"
-  },
-  "repositories": [
-    {
-      "type": "vcs",
-      "url": "https://github.com/helmutschneider/swish-php.git"
-    }
-  ]
-}
+```shell
+composer require helmutschneider/swish-php:^2.0
 ```
-Now you may execute `composer update` as usual.
 
 ## Obtaining test certificates
 Swish documentation as of 2018-06-27: https://developer.getswish.se/content/uploads/2017/04/MerchantsAPI_Getswish_180517_v1.91.pdf  
