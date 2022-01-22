@@ -91,17 +91,20 @@ class Client
 
     /**
      * @param PaymentRequest $request
-     * @return string payment request id
+     * @return CreatePaymentRequestResponse
      * @throws \GuzzleHttp\Exception\GuzzleException
      * @throws ValidationException
      */
-    public function createPaymentRequest(PaymentRequest $request): string
+    public function createPaymentRequest(PaymentRequest $request): CreatePaymentRequestResponse
     {
         $response = $this->sendRequest('POST', '/paymentrequests', [
             'json' => $this->filterRequestBody((array) $request),
         ]);
 
-        return Util::getObjectIdFromResponse($response);
+        return new CreatePaymentRequestResponse(
+            Util::getObjectIdFromResponse($response),
+            $response->getHeaderLine('PaymentRequestToken'),
+        );
     }
 
     /**

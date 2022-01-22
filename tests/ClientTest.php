@@ -59,9 +59,10 @@ class ClientTest extends TestCase
     {
         $paymentRequest = new PaymentRequest($this->paymentRequest);
         $paymentRequest->payerAlias = $this->randomSwedishPhoneNumber();
-        $id = $this->client->createPaymentRequest($paymentRequest);
-        $res = $this->client->getPaymentRequest($id);
-        $this->assertEquals($id, $res->id);
+        $paymentRequestResponse = $this->client->createPaymentRequest($paymentRequest);
+        $res = $this->client->getPaymentRequest($paymentRequestResponse->id);
+        $this->assertEquals($paymentRequestResponse->id, $res->id);
+        $this->assertSame('', $paymentRequestResponse->paymentRequestToken);
     }
 
     public function testThrowsValidationException(): void
@@ -84,13 +85,13 @@ class ClientTest extends TestCase
             'amount' => '100',
         ]);
 
-        $id = $this->client->createPaymentRequest($pr);
+        $paymentRequestResponse = $this->client->createPaymentRequest($pr);
 
         // the test server automatically sets the request
         // to "PAID" if we wait a couple of seconds.
         sleep(5);
 
-        $res = $this->client->getPaymentRequest($id);
+        $res = $this->client->getPaymentRequest($paymentRequestResponse->id);
 
         $id = $this->client->createRefund(new Refund([
             'originalPaymentReference' => $res->paymentReference,
