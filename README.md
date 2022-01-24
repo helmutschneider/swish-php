@@ -5,6 +5,12 @@ Swish-PHP is a small wrapper for the swish merchant api. See https://www.getswis
 - php 7.2.5 or newer with curl & openssl
 - composer
 
+## Upgrade notes
+
+### 3.0.0
+
+- The function `createPaymentRequest` now returns an object with the two properties `id` and `paymentRequestToken`. In earlier versions the id was returned directly.
+
 ## Installation via git
 ```shell
 git clone https://github.com/helmutschneider/swish-php.git
@@ -13,7 +19,7 @@ composer install
 
 ## Installation via composer
 ```shell
-composer require helmutschneider/swish-php:^2.0
+composer require helmutschneider/swish-php:^3.0
 ```
 
 ## Obtaining test certificates
@@ -37,11 +43,11 @@ class Client
 
     /**
      * @param PaymentRequest $request
-     * @return string payment request id
+     * @return CreatePaymentRequestResponse
      * @throws \GuzzleHttp\Exception\GuzzleException
      * @throws ValidationException
      */
-    public function createPaymentRequest(PaymentRequest $request): string;
+    public function createPaymentRequest(PaymentRequest $request): CreatePaymentRequestResponse;
     
     /**
      * @param string $id Payment request id
@@ -88,9 +94,9 @@ $pr = new PaymentRequest([
     'amount' => '100',
 ])
 
-$id = $client->createPaymentRequest($pr);
+$res = $client->createPaymentRequest($pr);
 
-var_dump($id);
+var_dump($res->id);
 
 //
 //  string(32) "0D3AD8F1AE484A57B82A87FAB8C602EB"
