@@ -2,7 +2,7 @@
 Swish-PHP is a small wrapper for the swish merchant api. See https://www.getswish.se/handel/ for more information.
 
 ## Dependencies
-- php 7.2.5 or newer with curl & openssl
+- php 7.3 or newer with curl & openssl
 - composer
 
 ## Upgrade notes
