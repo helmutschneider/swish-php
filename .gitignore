@@ -26,5 +26,6 @@ tests/_output/*
 tests/_support/_generated
 tests/_data/*.crt
 tests/_data/*.pem
+.phpunit.result.cache
 
 *.sqlite
