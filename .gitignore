@@ -21,6 +21,7 @@ vendor/
 .env
 .env-test
 
+mss_*.zip
 tests/_output/*
 tests/_support/_generated
 tests/_data/*.crt
