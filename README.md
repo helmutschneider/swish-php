@@ -83,6 +83,8 @@ $rootCert = 'path/to/swish-root.crt'; // forwarded to guzzle's "verify" option
 // you may use an empty string for "password" if you are using the test certificates.
 $clientCert = ['path/to/client-cert.pem', 'password'];
 
+// Create a client for the production environment. To connect to the test environment
+// instead, you must pass the constant Client::SWISH_TEST_URL as the third parameter.
 $client = Client::make($rootCert, $clientCert);
 
 $pr = new PaymentRequest([
