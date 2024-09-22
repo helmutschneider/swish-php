@@ -23,14 +23,14 @@ composer require helmutschneider/swish-php:^3.0
 ```
 
 ## Obtaining test certificates
-As of 2022-05-29, a test certificate bundle (mss\_test\_1.9.2.zip) can be found by visiting:
+As of 2024-09-22, a test certificate bundle (mss\_test\_2.0.zip) can be found by visiting:
 https://developer.swish.nu/documentation/environments#certificates
 
 Begin by obtaining the SSL certificates required by Swish. The Swish server itself uses a self-signed root
 certificated so a CA-bundle to verify its origin is needed. You will also need a client certificate and
 corresponding private key so the Swish server can identify you.
 
-As of 2022-05-29 the test certificates are called `Swish_Merchant_TestCertificate_1234679304.key`, `Swish Merchant Test Certificate 1231181189.pem` and `Swish_TLS_RootCA.pem`.
+As of 2024-09-22 the test certificates are called `Swish_Merchant_TestCertificate_1234679304.key`, `Swish Merchant Test Certificate 1231181189.pem` and `Swish_TLS_RootCA.pem`.
 **You must concatenate `Swish_Merchant_TestCertificate_1234679304.key` and `Swish Merchant Test Certificate 1231181189.pem` together, otherwise they will not work with cURL.
 This bundle is your client certificate.**
 
@@ -47,14 +47,14 @@ class Client
      * @throws ValidationException
      */
     public function createPaymentRequest(PaymentRequest $request): CreatePaymentRequestResponse;
-    
+
     /**
      * @param string $id Payment request id
      * @return PaymentRequest
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function getPaymentRequest(string $id): PaymentRequest;
-    
+
     /**
      * @param Refund $refund
      * @return string refund id
@@ -62,7 +62,7 @@ class Client
      * @throws ValidationException
      */
     public function createRefund(Refund $refund): string;
-    
+
     /**
      * @param string $id Refund id
      * @return Refund

@@ -1,4 +1,4 @@
-ARG PHP=8.2
+ARG PHP=8.3
 FROM docker.io/php:${PHP}-cli
 
 ARG MSS_PASS=swish
